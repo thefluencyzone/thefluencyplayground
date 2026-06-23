@@ -1,0 +1,1297 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Fluency Playground - The Fluency Playground!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        arcade: {
+                            bg: '#1A0B2E',         /* Bubbly deep space purple */
+                            panel: '#2D1254',      /* Soft purple panel */
+                            accentPink: '#FF3366',  /* Electric strawberry pink */
+                            accentCyan: '#00E5FF',  /* Cosmic sky cyan */
+                            accentYellow: '#FFD166',/* Cheerful sunny yellow */
+                            accentGreen: '#06D6A0', /* Energetic lime/mint green */
+                            coral: '#FF7043',       /* Warm toy orange */
+                            coralLight: '#FF8A65'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Fredoka', 'Inter', 'system-ui', 'sans-serif'],
+                        display: ['Fredoka One', 'Outfit', 'system-ui', 'sans-serif'],
+                        comic: ['Fredoka', 'Comfortaa', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Comfortaa:wght@400;500;700&family=Outfit:wght@600;700;800&display=swap');
+        
+        body {
+            background-color: #FFF3E0; /* Creamy peach for light mode */
+            color: #2D1254;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 112, 67, 0.1), transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.1), transparent 30%),
+                radial-gradient(circle at 50% 50%, rgba(255, 209, 102, 0.15), transparent 40%);
+            background-attachment: fixed;
+            font-family: 'Fredoka', 'Inter', sans-serif;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Kid-friendly dark mode styles */
+        html.dark body {
+            background-color: #150727;
+            color: #FFF3E0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(255, 51, 102, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.15), transparent 25%);
+        }
+
+        /* Custom Kid-friendly Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #1A0B2E; }
+        ::-webkit-scrollbar-thumb { background: #FF3366; border-radius: 9999px; border: 2px solid #1A0B2E; }
+        ::-webkit-scrollbar-thumb:hover { background: #00E5FF; }
+
+        /* Bouncy visual popouts and glowing effects */
+        .glow-neon-pink { filter: drop-shadow(0 0 8px rgba(255, 51, 102, 0.6)); }
+        .glow-neon-cyan { filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.6)); }
+        .glow-neon-yellow { filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.6)); }
+        
+        button, a, .cursor-pointer { 
+            touch-action: manipulation; 
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        button:active, a:active {
+            transform: scale(0.92);
+        }
+        
+        .unit-content {
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        
+        .unit-content.active {
+            max-height: 3000px; /* Safe bounds for child cards */
+            opacity: 1;
+        }
+
+        /* Cute cartoon floating movement */
+        @keyframes gentleFloat {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .float-animation {
+            animation: gentleFloat 4s ease-in-out infinite;
+        }
+    </style>
+    <script>
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+
+    <!-- Navigation (Styled with rounded borders for kid-friendly toy aesthetics) -->
+    <nav class="sticky top-0 z-50 bg-[#2D1254]/95 backdrop-blur-md border-b-4 border-arcade-accentPink/30 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 cursor-pointer float-animation">
+                    <a href="#" class="font-display text-2xl sm:text-3xl font-bold tracking-wide flex items-center gap-2 leading-none">
+                        <span class="text-arcade-accentYellow font-black">🕹️ Fluency</span>
+                        <span class="text-arcade-accentCyan">Playground</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Nav -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-4">
+                        <a href="#" class="text-white hover:text-arcade-accentYellow transition px-3 py-2 rounded-xl text-base font-bold">Home</a>
+                        <div class="flex items-center gap-3">
+                            <!-- Theme Toggle Button (Desktop) -->
+                            <button onclick="toggleTheme()" class="theme-toggle-icon p-2.5 rounded-full border-2 border-arcade-accentPink text-arcade-accentYellow hover:bg-arcade-accentPink/20 transition" aria-label="Toggle Theme">
+                                <!-- Icon loaded dynamically -->
+                            </button>
+                            
+                            <!-- Game Zones Button -->
+                            <a href="#games-section" class="bg-arcade-coral hover:bg-arcade-coralLight text-white border-b-4 border-amber-800 px-6 py-2.5 rounded-2xl text-sm font-extrabold tracking-wide transition shadow-lg">Game Zones</a>
+                            
+                            <!-- Arcade Classics Button -->
+                            <button onclick="openGamesModal()" class="bg-arcade-accentPink hover:bg-rose-500 text-white border-b-4 border-rose-800 px-6 py-2.5 rounded-2xl text-sm font-extrabold tracking-wide transition shadow-lg">Arcade Games</button>
+                            
+                            <!-- Need Help Button -->
+                            <button onclick="openHelpModal()" class="border-2 border-arcade-accentCyan text-arcade-accentCyan hover:bg-arcade-accentCyan hover:text-arcade-bg px-6 py-2.5 rounded-2xl text-sm font-extrabold tracking-wide transition shadow-lg">Need Help?</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Nav controls -->
+                <div class="md:hidden flex items-center gap-2">
+                    <button onclick="toggleTheme()" class="theme-toggle-icon p-2.5 rounded-full border-2 border-arcade-accentPink text-arcade-accentYellow hover:bg-arcade-accentPink/20 transition" aria-label="Toggle Theme">
+                        <!-- Icon loaded dynamically -->
+                    </button>
+                    <!-- Hamburger Button -->
+                    <button onclick="toggleMobileMenu()" class="p-2.5 rounded-full border-2 border-arcade-accentCyan text-arcade-accentCyan hover:bg-arcade-accentCyan/20 transition focus:outline-none" aria-label="Toggle Menu">
+                        <svg id="hamburger-icon" class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Expandable Hamburger Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-20 left-0 w-full bg-[#2D1254]/95 backdrop-blur-md border-b-4 border-arcade-accentPink px-6 py-6 flex flex-col gap-4 shadow-2xl z-40 transition-all duration-300">
+            <a href="#games-section" onclick="closeMobileMenu()" class="w-full text-center bg-arcade-coral text-white py-3 border-b-4 border-amber-800 rounded-2xl text-sm font-extrabold transition">
+                🚀 Game Zones
+            </a>
+            <button onclick="triggerMobileGame()" class="w-full text-center bg-arcade-accentPink text-white py-3 border-b-4 border-rose-800 rounded-2xl text-sm font-extrabold transition">
+                🎮 Play Classics
+            </button>
+            <button onclick="triggerMobileHelp()" class="w-full text-center border-2 border-arcade-accentCyan text-arcade-accentCyan py-3 rounded-2xl text-sm font-extrabold transition">
+                🙋 Parent & Player Help
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative overflow-hidden py-16 sm:py-24">
+        <!-- Playful bubbles in the background -->
+        <div class="absolute top-10 left-10 w-20 h-20 bg-arcade-accentPink/10 rounded-full blur-xl pointer-events-none float-animation"></div>
+        <div class="absolute bottom-10 right-10 w-32 h-32 bg-arcade-accentCyan/10 rounded-full blur-2xl pointer-events-none float-animation" style="animation-delay: 2s;"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-arcade-panel border-2 border-arcade-accentYellow mb-8 shadow-md">
+                    <span class="w-3.5 h-3.5 rounded-full bg-arcade-accentGreen animate-ping"></span>
+                    <span class="text-sm font-black text-arcade-accentYellow tracking-wide uppercase">🎮 Epic Kid-Safe Gaming Adventures!</span>
+                </div>
+
+                <h1 class="text-5xl sm:text-7xl font-display font-black mb-6 leading-tight text-arcade-panel dark:text-white transition-colors">
+                    The Ultimate <br class="sm:hidden">
+                    <span class="text-arcade-accentPink glow-neon-pink">Fluency</span> 
+                    <span class="text-arcade-accentCyan glow-neon-cyan">Playground</span>!
+                </h1>
+                <p class="text-lg sm:text-2xl font-bold text-arcade-panel dark:text-gray-200 mb-10 transition-colors leading-relaxed">
+                    Explore safe, kid-friendly online gaming zones! Play interactive previews, complete challenges, and earn your Gamer Champion Badge! 🏆
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#games-section" class="px-8 py-4 border-b-4 border-arcade-accentGreen/80 bg-arcade-accentGreen text-arcade-bg hover:bg-emerald-400 font-extrabold text-lg rounded-2xl transition shadow-xl hover:-translate-y-1">
+                        Explore Gaming Zones 🌟
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Games Curriculum Section -->
+    <main id="games-section" class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+        <div class="mb-12 border-b-4 border-arcade-panel/15 dark:border-arcade-panel/60 pb-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-4xl font-display font-black text-[#2D1254] dark:text-white mb-2 transition-colors">🎮 Gaming Zones & Quests</h2>
+                <p class="text-gray-700 dark:text-gray-300 font-bold text-base transition-colors">Pick a zone, launch interactive previews, and try creative minigame drills!</p>
+            </div>
+            <span class="text-5xl float-animation">⭐</span>
+        </div>
+
+        <div id="units-container" class="space-y-6">
+            <!-- Dynamic Gaming Units injected dynamically -->
+        </div>
+    </main>
+
+    <!-- Immersive Video Player & Exercise Workspace Modal -->
+    <div id="learning-modal" class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-arcade-panel border-4 border-arcade-accentPink w-full max-w-5xl rounded-3xl overflow-y-auto md:overflow-hidden shadow-[0_0_40px_rgba(255,51,102,0.4)] flex flex-col md:flex-row max-h-[95dvh] md:max-h-[90vh]">
+            <!-- Left Side: Interactive Frame & Workspace Sections -->
+            <div class="w-full md:w-3/5 bg-[#150727] flex flex-col justify-between overflow-y-visible md:overflow-y-auto flex-shrink-0 md:flex-shrink border-b-4 md:border-b-0 md:border-r-4 border-arcade-accentPink/30">
+                <div>
+                    <div class="relative pb-[56.25%] h-0">
+                        <iframe id="modal-iframe" class="absolute top-0 left-0 w-full h-full bg-[#1A0B2E]" src="" title="Arcade game player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-6">
+                        <h3 id="modal-story-title" class="text-3xl font-display font-black text-white mb-2">Game Title</h3>
+                        <p id="modal-story-desc" class="text-arcade-accentCyan text-sm font-bold mb-4">Adventure guide and challenge drills!</p>
+                        
+                        <!-- Collapsible Walkthrough/Instructions Block -->
+                        <div class="mb-6">
+                            <button onclick="toggleTranscript()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-arcade-accentPink hover:bg-rose-500 border-b-4 border-rose-800 rounded-2xl text-xs font-black text-white transition">
+                                <span id="transcript-toggle-icon">📖</span>
+                                <span id="transcript-toggle-text">Read Play Guide & Tips</span>
+                            </button>
+                            <div id="transcript-window" class="hidden mt-3 p-4 bg-arcade-bg border-2 border-arcade-accentPink/40 rounded-2xl max-h-48 overflow-y-auto">
+                                <p id="transcript-text" class="text-sm text-arcade-accentYellow font-semibold whitespace-pre-wrap leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <!-- Core Workspace Interactive Modules -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t-2 border-arcade-accentPink/20">
+                            <!-- Creative Blueprint Challenge Button -->
+                            <button onclick="openHomeworkPanel()" class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-purple-900 to-indigo-950 border-2 border-arcade-coral hover:scale-105 text-left rounded-2xl transition duration-200 group">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-3xl">🎨</span>
+                                    <div>
+                                        <h5 class="text-base font-black text-white group-hover:text-arcade-coral transition">Creative Blueprint</h5>
+                                        <p class="text-xs text-slate-400">Launch drawing quest</p>
+                                    </div>
+                                </div>
+                                <svg class="w-5 h-5 text-arcade-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                            </button>
+
+                            <!-- Co-Op Team Comms Hub Button -->
+                            <button onclick="openSpeakingPanel()" class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-purple-900 to-indigo-950 border-2 border-arcade-accentCyan hover:scale-105 text-left rounded-2xl transition duration-200 group">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-3xl">🗣️</span>
+                                    <div>
+                                        <h5 class="text-base font-black text-white group-hover:text-arcade-accentCyan transition">Co-Op Team Speak</h5>
+                                        <p class="text-xs text-slate-400">Team callouts & etiquette</p>
+                                    </div>
+                                </div>
+                                <svg class="w-5 h-5 text-arcade-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side: Mini-Games & Skills -->
+            <div class="w-full md:w-2/5 p-6 flex flex-col overflow-y-visible md:overflow-y-auto bg-arcade-panel">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h4 class="text-lg font-black uppercase tracking-wider text-arcade-accentYellow font-display">⚡ Play & Drill Challenges</h4>
+                    </div>
+                    <!-- Desktop-only Close Button -->
+                    <button onclick="closeLearningModal()" class="hidden md:block text-white hover:bg-rose-500 bg-arcade-accentPink p-2 rounded-xl transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <div id="modal-apps-container" class="space-y-3 flex-grow">
+                    <!-- Exercise buttons injected dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supplementary Feature Modal: Creative Blueprint Quest -->
+    <div id="homework-modal" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-arcade-panel border-4 border-arcade-coral w-full max-w-lg rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(255,112,67,0.3)] flex flex-col">
+            <div class="p-6 border-b-2 border-slate-700 flex justify-between items-center bg-purple-950">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🎨</span>
+                    <h4 class="text-xl font-display font-black text-white">Creative Gaming Blueprint</h4>
+                </div>
+                <button onclick="closeHomeworkPanel()" class="text-white bg-arcade-coral hover:bg-arcade-coralLight p-1.5 rounded-lg transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-xs font-black uppercase tracking-wider text-arcade-accentYellow">🏆 Hero Drawing Challenge:</p>
+                <div class="bg-purple-950 border-2 border-arcade-coral/40 rounded-2xl p-4 shadow-inner">
+                    <p id="homework-prompt-text" class="text-base text-gray-200 font-bold whitespace-pre-wrap leading-relaxed">Drawing challenge instructions loading...</p>
+                </div>
+            </div>
+            <div class="p-6 bg-[#150727] border-t-2 border-slate-700 flex justify-end">
+                <button onclick="closeHomeworkPanel()" class="px-6 py-3 bg-arcade-coral hover:bg-arcade-coralLight text-white border-b-4 border-amber-800 rounded-2xl text-xs font-black transition">I'm Ready to Build! 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supplementary Feature Modal: Speaking Section -->
+    <div id="speaking-modal" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-arcade-panel border-4 border-arcade-accentCyan w-full max-w-xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,229,255,0.3)] flex flex-col">
+            <div class="p-6 border-b-2 border-slate-700 flex justify-between items-center bg-purple-950">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🗣️</span>
+                    <h4 class="text-xl font-display font-black text-white">Co-Op Gaming Voice Lab</h4>
+                </div>
+                <button onclick="closeSpeakingPanel()" class="text-white bg-arcade-accentCyan hover:bg-cyan-400 p-1.5 rounded-lg transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                <p class="text-xs font-black uppercase tracking-wider text-arcade-accentCyan">🗣️ Friendly Gamer Communication Codes:</p>
+                <div class="bg-purple-950 border-2 border-arcade-accentCyan/30 rounded-2xl p-5 shadow-inner">
+                    <ol id="speaking-expressions-list" class="space-y-3.5 text-base text-gray-200">
+                        <!-- Loaded Dynamically -->
+                    </ol>
+                </div>
+                
+                <!-- Launching Action inside Speaking component -->
+                <div class="pt-4 border-t border-slate-700 mt-2">
+                    <button onclick="launchSpeakingApp()" class="w-full py-4 bg-gradient-to-r from-arcade-accentCyan to-[#00b2cc] hover:from-cyan-300 hover:to-arcade-accentCyan text-[#1A0B2E] font-black text-base tracking-wide rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.3)] border-b-4 border-teal-800 transition flex items-center justify-center gap-2">
+                        <span>🎙️ Play Multiplayer Match Voice Callouts!</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Need Help? Supplementary Modal -->
+    <div id="help-modal" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-arcade-panel border-4 border-arcade-accentCyan w-full max-w-xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,229,255,0.3)] flex flex-col">
+            <!-- Header -->
+            <div class="p-6 border-b-2 border-slate-700 flex justify-between items-center bg-purple-950">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🙋‍♂️</span>
+                    <h4 class="text-xl font-display font-black text-white">Player & Parent Assistance Hub</h4>
+                </div>
+                <button onclick="closeHelpModal()" class="text-white bg-arcade-accentPink hover:bg-rose-500 p-1.5 rounded-lg transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Grid of Clean Numbered Help Apps -->
+            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                <p class="text-xs font-black uppercase tracking-wider text-arcade-accentYellow">Select a help guide below:</p>
+                <div id="help-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Configured Help Apps dynamically injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Games Centre Modal -->
+    <div id="games-modal" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-arcade-panel border-4 border-arcade-coral w-full max-w-xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(255,112,67,0.3)] flex flex-col">
+            <!-- Header -->
+            <div class="p-6 border-b-2 border-slate-700 flex justify-between items-center bg-purple-950">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🎮</span>
+                    <h4 class="text-xl font-display font-black text-white">Arcade Games Room</h4>
+                </div>
+                <button onclick="closeGamesModal()" class="text-white bg-arcade-accentPink hover:bg-rose-500 p-1.5 rounded-lg transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Grid of Playable Mini-Games -->
+            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                <p class="text-xs font-black uppercase tracking-wider text-arcade-accentYellow">Pick an amazing retro mini-game to play:</p>
+                <div id="games-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Configured Games dynamically injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Instruction Hover Popover/Tooltip -->
+    <div id="app-tooltip" class="fixed z-[100] hidden pointer-events-none bg-arcade-panel border-2 border-arcade-accentCyan rounded-2xl p-3.5 shadow-2xl max-w-xs transition-opacity duration-150">
+        <p id="tooltip-text" class="text-xs text-white leading-relaxed font-bold">Instructions will render dynamically.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-arcade-panel border-t-8 border-arcade-accentPink/30 mt-20 py-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center mb-6 float-animation">
+                <a href="#" class="font-display text-2xl sm:text-3xl font-black tracking-wider flex items-center gap-1.5 leading-none">
+                    <span class="text-arcade-accentYellow">🕹️ Fluency</span>
+                    <span class="text-arcade-accentCyan">Playground</span>
+                </a>
+            </div>
+            <p class="text-arcade-accentYellow text-base font-bold">Designed lovingly for young explorers and retro gamer champs! 🚀</p>
+            <p class="text-slate-400 text-xs mt-3">© 2026 The Fluency Playground. Play safe, play kind.</p>
+        </div>
+    </footer>
+
+    <!-- Logic for generating Gaming Units, Play challenges, and Playable Modals -->
+    <script>
+        // Store current active indexes globally
+        let activeUnitIndex = 0;
+        let activeStoryIndex = 0;
+
+        // Custom list of kid-friendly minigames
+        const gamesData = [
+            {
+                id: 1,
+                title: "Snake & Chatter Chat",
+                emoji: "🐍",
+                url: "https://snakes-and-chatter.netlify.app/"
+            },
+            {
+                id: 2,
+                title: "Bubbly Balloon Pop",
+                emoji: "🎈",
+                url: "https://balloon-pop.puter.site/"
+            },
+            {
+                id: 3,
+                title: "Memory Match-up 3D",
+                emoji: "🧸",
+                url: "https://thedogmemorygame.netlify.app/"
+            }
+        ];
+
+        // Safe educational kid play guides
+        const helpAppsData = [
+            {
+                id: 1,
+                title: "Team Play Rules",
+                emoji: "🤝",
+                url: "https://classexpressions.netlify.app/"
+            },
+            {
+                id: 2,
+                title: "Safe Gaming Helper",
+                emoji: "🛡️",
+                url: "https://classexpressions2.netlify.app/"
+            },
+            {
+                id: 3,
+                title: "Parent Dashboard",
+                emoji: "👪",
+                url: "https://english-essentials.netlify.app/"
+            }
+        ];
+
+        // Synthesized Retro UI/Game sounds
+        let audioCtx = null;
+        const playClickSound = () => {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            // Retro 8-bit sound chip profile
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.08);
+            
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        };
+
+        // Cute mini gaming instructions for kids
+        const appInstructions = [
+            "Complete this run to lock in your super high score and reveal the prize code!",
+            "Identify the glowing pattern and press the matching pixel buttons in sequence.",
+            "Listen closely to the game coach, call out your strategy, and win bonus stars!",
+            "Match the retro game elements to their correct power-up pairs.",
+            "Help the pixel character find the path through the dangerous block world.",
+            "Rebuild the historic timeline of game console icons from oldest to newest.",
+            "Conquer a fast-paced color bubble reflex game under the ticking clock!",
+            "Answer trivia challenges about secret paths and unlock the level chest."
+        ];
+
+        // Dynamic App generator mapped to individual game modules
+        const generateApps = (fixedCount = null) => {
+            const numApps = fixedCount !== null ? fixedCount : 8;
+            const apps = [];
+            
+            for (let i = 0; i < numApps; i++) {
+                apps.push({
+                    id: i + 1,
+                    title: `Zone Drill ${i + 1}`,
+                    instruction: appInstructions[i % appInstructions.length]
+                });
+            }
+            return apps;
+        };
+
+        // Dynamic Gaming Curriculum Data: Interactive Zones containing exactly 4 Game entries with child-friendly game frameworks
+        const curriculumData = [
+            {
+                id: 1,
+                title: "Zone 1: Retro Arcade Classics",
+                description: "Master legendary retro platformers and maze games! Learn the patterns, speedrun tricks, and high-score combos.",
+                stories: [
+                    { 
+                        id: 1, 
+                        title: "Fish Eat Fish: Ocean Arena Preview", 
+                        duration: "LIVE",
+                        gameUrl: "https://poki.com/es/g/fish-eat-fish", 
+                        thumbnail: "https://img.poki.com/cdn-cgi/image/width=314,height=314,fit=cover,f=auto/b7b91fc10df9d05e3f36bfb63e9f4a9b.png",
+                        description: "Go deep beneath the sea in this live multiplayer ocean battle! Eat smaller fish, dodge giant sharks, and grow into the king of the reef.",
+                        apps: (() => {
+                            const apps = generateApps(9);
+                            
+                            apps[0].url = "https://thedogandhisbone.netlify.app/";
+                            apps[0].instruction = "Sequence the strategic swim paths to dodge the sea obstacles in perfect order.";
+                            
+                            apps[1].url = "https://thedogquest.netlify.app/";
+                            apps[1].instruction = "Answer the ocean habitat questions to defeat the giant shark boss!";
+                            
+                            apps[2].url = "https://thedogopen.netlify.about/";
+                            apps[2].instruction = "Uncover hidden golden clam shells and identify deep sea power-ups.";
+                            
+                            apps[3].url = "https://thedogandhisbone2.netlify.app/";
+                            apps[3].instruction = "Arrange the growing timeline to clear the dangerous coral reef zone.";
+                            
+                            apps[4].url = "https://thedogquizz.netlify.app/";
+                            apps[4].instruction = "Take the Ocean Marine Biology Quiz and select the best item combo!";
+                            
+                            apps[5].url = "https://thedogmatch.netlify.app/";
+                            apps[5].instruction = "Match identical coral and sea star species to clear the playing board.";
+                            
+                            apps[6].url = "https://thedogandhisbone3.netlify.app/";
+                            apps[6].instruction = "Arrange the sea treasure chest puzzle sequencing.";
+                            
+                            apps[7].url = "https://thedogmemorygame.netlify.app/";
+                            apps[7].instruction = "A colorful matching challenge to test your visual layout memory under the waves!";
+                            
+                            apps[8].url = "https://thedogmemorygame2.netlify.app/";
+                            apps[8].instruction = "Find matching deep sea keys and earn double points!";
+                            
+                            return apps;
+                        })(),
+                        homeworkPrompt: "Grab a sheet of paper and design your very own custom Sea Creature! Include:\n\n1. At least 3 defensive spikes.\n2. A funny custom fin layout.\n3. A funny new glowing lure.\n4. Write down its special movement power under the water!",
+                        transcript: `Fish Eat Fish Guide: Ocean Dominance\n\nTo become a sea master, you must understand swimming velocity and scales. \n\nWhen swimming, search for creatures smaller than yourself to absorb their energy. Do not approach glowing pink jellyfish, as they will stun your movement.\n\nSecret Tip: Gather two other friends for epic local 3-player matchups to see who can reign supreme over the deep blue arena!`,
+                        speakingExpressions: [
+                            "Dodge the giant hammerhead!",
+                            "Found a gold chest on the seabed!",
+                            "Watch your tail, shark incoming!",
+                            "Let's school up and swim together!",
+                            "Eat those colorful small fishes!",
+                            "My fish has grown three sizes!",
+                            "Watch out for the stun coral!",
+                            "High score achieved on Poki!"
+                        ]
+                    },
+                    { 
+                        id: 2, 
+                        title: "Pac-Man: Maze Running Mastery", 
+                        duration: "4:15",
+                        youtubeId: "_6mlmRJHxNo",
+                        thumbnail: "https://img.youtube.com/vi/_6mlmRJHxNo/hqdefault.jpg",
+                        description: "Dodge spooky ghosts and eat power pellets in this high-speed classic. Discover the logic secrets behind ghost movements!",
+                        apps: (() => {
+                            const apps = generateApps(7);
+                            apps[0].url = "https://theoaktree.netlify.app/";
+                            apps[0].instruction = "Track the movement steps of the red ghost to escape the dead end.";
+                            
+                            apps[1].url = "https://theoakhangman.netlify.app/";
+                            apps[1].instruction = "Solve game term scrambles like Pellet, Chomp, and Maze!";
+                            
+                            apps[2].url = "https://theoaktree2.netlify.app/";
+                            apps[2].instruction = "Arrange path routes in chronological order to find the key.";
+                            
+                            apps[3].url = "https://theoakanagram.netlify.app/";
+                            apps[3].instruction = "Spell the monster names based on their silly faces!";
+                            
+                            apps[4].url = "https://theoaklistening.netlify.app/";
+                            apps[4].instruction = "Listen to sound cues and identify if the path is clear or haunted.";
+                            
+                            apps[5].url = "https://theoaktree3.netlify.app/";
+                            apps[5].instruction = "Assemble the highest coin route maze puzzle.";
+                            
+                            apps[6].url = "https://theoaktreematchup.netlify.app/";
+                            apps[6].instruction = "Match fruit bonuses with their respective level rewards.";
+                            
+                            return apps;
+                        })(),
+                        homeworkPrompt: "Create a maze outline with cardboard or markers. Label the four ghosts (Blinky, Pinky, Inky, and Clyde) and draw a path for your player to eat all the dots without getting trapped!",
+                        transcript: `Maze Runners: Ghost Logic Secrets\n\nDid you know the ghosts have unique personalities? \n\nBlinky (the red ghost) will chase you directly. Pinky (the pink ghost) tries to ambush you by moving ahead of your path. Inky and Clyde will sometimes wander away when you face them!\n\nAlways save the large flashing power pellets for when the ghosts get too close. Once they turn deep blue, turn around and chase them down!`,
+                        speakingExpressions: [
+                            "The red ghost is following me!",
+                            "Go left at the intersection!",
+                            "Eat the golden power cherry!",
+                            "Watch out for Clyde!",
+                            "Is the path clear of hazards?",
+                            "Safe zone ahead!",
+                            "I got a new high score!"
+                        ]
+                    },
+                    { 
+                        id: 3, 
+                        title: "Space Invaders: Laser Defenders", 
+                        duration: "3:30",
+                        youtubeId: "BF3bXji-J7I",
+                        thumbnail: "https://img.youtube.com/vi/BF3bXji-J7I/hqdefault.jpg",
+                        description: "Pilot your pixel ship, take cover behind shields, and protect the home planet from waves of retro cosmic aliens.",
+                        apps: (() => {
+                            const apps = generateApps(6);
+                            apps[0].url = "https://thefoxtranscript.netlify.app/";
+                            apps[0].instruction = "Select the correct pattern wave order of cosmic spaceships.";
+                            
+                            apps[1].url = "https://thefoxtyping.netlify.app/";
+                            apps[1].instruction = "Type laser defense system codes to fire your shield barriers!";
+                            
+                            apps[2].url = "https://thefoxtranscript2.netlify.app/";
+                            apps[2].instruction = "Deconstruct alien movement patterns step-by-step.";
+                            
+                            apps[3].url = "https://thefoxaudioimages.netlify.app/";
+                            apps[3].instruction = "Sort flying motherships by size and reward tier.";
+                            
+                            apps[4].url = "https://thefoxtranscript3.netlify.app/";
+                            apps[4].instruction = "Assemble your modular defender shield walls.";
+                            
+                            apps[5].url = "https://thefoxtranscriptimages.netlify.app/";
+                            apps[5].instruction = "Analyze space definitions and draft a map of galaxy sectors.";
+                            
+                            return apps;
+                        })(),
+                        homeworkPrompt: "Draw your own alien invader! Make it look blocky and pixelated using small square grids. Give it 4 arms, a silly mouth, and name your custom alien race!",
+                        transcript: `Galaxy Defenders: Shooting Mechanics\n\nTo save the defense bunkers, do not shoot randomly. Aim at the outer edges of the alien ranks first! \n\nAs the alien fleet grows smaller, they speed up significantly. Use your laser cover shields wisely—they break down when taking damage. Keep a sharp eye on the flashing red UFO at the top of the screen for massive bonus points!`,
+                        speakingExpressions: [
+                            "Mothership spotted at the top!",
+                            "Take cover behind the laser shield!",
+                            "The invaders are speeding up!",
+                            "Aim for the outer edge!",
+                            "Shield durability is low!",
+                            "Cosmic bonus points earned!"
+                        ]
+                    },
+                    { 
+                        id: 4, 
+                        title: "Sonic: High-Speed Momentum Physics", 
+                        duration: "6:10",
+                        youtubeId: "lazzSIkjxGQ",
+                        thumbnail: "https://img.youtube.com/vi/lazzSIkjxGQ/hqdefault.jpg",
+                        description: "Run loops, jump spikes, and collect shiny golden rings. Discover how physics controls momentum and speed!",
+                        apps: (() => {
+                            const apps = generateApps(7);
+                            apps[0].url = "https://showofftranscript.netlify.app/";
+                            apps[0].instruction = "Estimate loop speed to build dynamic rolling momentum.";
+                            
+                            apps[1].url = "https://dontshowoffquizz.netlify.app/";
+                            apps[1].instruction = "Identify the physics force driving the spinning hedgehog!";
+                            
+                            apps[2].url = "https://showofftranscript2.netlify.app/";
+                            apps[2].instruction = "Reconstruct the ring collection path along the loops.";
+                            
+                            apps[3].url = "https://dontshowoffreplicate.netlify.app/";
+                            apps[3].instruction = "Replicate speed dash combos using arrow key combinations.";
+                            
+                            apps[4].url = "https://showofftranscript3.netlify.app/";
+                            apps[4].instruction = "Line up platform launch pads in the correct velocity angle.";
+                            
+                            apps[5].url = "https://dontshowoffwhatsmissing.netlify.app/";
+                            apps[5].instruction = "Uncover hidden golden ring caches around the loop!";
+                            
+                            apps[6].url = "https://dontshowoffwhatsmissing2.netlify.app/";
+                            apps[6].instruction = "Unlock spring pads to jump over spikes!";
+                            
+                            return apps;
+                        })(),
+                        homeworkPrompt: "Write down 3 real-world items that use rolling kinetic energy (like a bowling ball or bicycle). Explain how rolling helps them go faster, just like our speedy hedgehog!",
+                        transcript: `Kinetic Speed: Momentum Guidelines\n\nSonic's spin dash allows players to accumulate rolling speed quickly. \n\nWhen descending a curved hill, curl into a ball to transform gravitational pull into maximum speed. Keep at least one golden ring on you at all times; holding a ring guarantees you survive spiky obstacles!`,
+                        speakingExpressions: [
+                            "Spin dash activated!",
+                            "Gather all the golden rings!",
+                            "Watch out for the spike pit!",
+                            "Hit the red spring pad!",
+                            "Run through the loop-the-loop!",
+                            "Gotta go fast!"
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Zone 2: Creative Sandboxes",
+                description: "Build epic worlds in Minecraft, construct interactive Roblox obstacle courses, and design cozy spaces in Animal Crossing.",
+                stories: [
+                    { 
+                        id: 1, 
+                        title: "Minecraft: Creative Castle Construction", 
+                        duration: "7:45",
+                        youtubeId: "Dfz0erhfT6w",
+                        thumbnail: "https://img.youtube.com/vi/Dfz0erhfT6w/hqdefault.jpg",
+                        description: "Learn block coordinates, color blending, and layout techniques to build a medieval castle fit for a pixel king!",
+                        apps: (() => {
+                            const apps = generateApps(7);
+                            apps[0].url = "https://lettinggoofthepast.netlify.app/";
+                            apps[0].instruction = "Draft architectural base blueprints using square grids.";
+                            
+                            apps[1].url = "https://expressions1.netlify.app/";
+                            apps[1].instruction = "Review stone blocks, glass frames, and drawbridges.";
+                            
+                            apps[2].url = "https://lettinggoofthepast2.netlify.app/";
+                            apps[2].instruction = "Reconstruct safety torches to prevent nocturnal spiders.";
+                            
+                            apps[3].url = "https://adjectivesmatch.netlify.app/";
+                            apps[3].instruction = "Sort block textures by roughness and beauty.";
+                            
+                            apps[4].url = "https://lettinggolistening.netlify.app/";
+                            apps[4].instruction = "Listen to building instructions to assemble block structures.";
+                            
+                            apps[5].url = "https://lettinggoofthepast3.netlify.app/";
+                            apps[5].instruction = "Create the layout path of castle dungeon tunnels.";
+                            
+                            apps[6].url = "https://lettinggowordle.netlify.app/";
+                            apps[6].instruction = "Crack spelling codes for building materials!";
+                            
+                            return apps;
+                        })(),
+                        homeworkPrompt: "Design a fortress blueprint on a piece of grid paper. Detail your fortress layout with labels for defensive archery towers, a dining hall, and a secret underground vault!",
+                        transcript: `Building blocks: Castle Architecture Guide\n\nWhen building a castle, use a mixture of Cobblestone and Mossy Stone to create realistic weathered patterns. \n\nAdd depth to your walls by pushing blocks back by one layer to create arch windows. Always place torches every five blocks to keep the interior well-lit and free of creeper spawns!`,
+                        speakingExpressions: [
+                            "Mine for diamond ore!",
+                            "Place a block of cobblestone here.",
+                            "Creeper hiss detected! Run!",
+                            "Craft some wood planks.",
+                            "Where is the castle gate?",
+                            "Light up the dark cave!"
+                        ]
+                    },
+                    { 
+                        id: 2, 
+                        title: "Roblox: Obstacle Course Creation", 
+                        duration: "8:20",
+                        youtubeId: "3zTR4ayDG38",
+                        thumbnail: "https://img.youtube.com/vi/3zTR4ayDG38/hqdefault.jpg",
+                        description: "Design and program your own challenging Obby! Learn how neon lava bricks work and build crazy double-jump setups.",
+                        apps: (() => {
+                            const apps = generateApps(8);
+                            apps[0].url = "https://sweden1.netlify.app/";
+                            apps[0].instruction = "Assemble platforms with proper jumping distances.";
+                            
+                            apps[1].url = "https://solar-anagram.netlify.app/";
+                            apps[1].instruction = "Unscramble game terms like Obby, Jump, and Script!";
+                            
+                            apps[2].url = "https://group-sort-sweden.netlify.app/";
+                            apps[2].instruction = "Categorize static platforms vs dangerous moving blocks.";
+                            
+                            apps[3].url = "https://sweden2.netlify.app/";
+                            apps[3].instruction = "Arrange check-point locations on the obstacle course.";
+                            
+                            apps[4].url = "https://matching-definitions.netlify.app/";
+                            apps[4].instruction = "Identify custom tool symbols in the platform editor.";
+                            
+                            apps[5].url = "https://sweden3.netlify.app/";
+                            apps[5].instruction = "Assemble a script template to make neon blocks disappear.";
+                            
+                            apps[6].url = "https://fitconnectors.netlify.app/";
+                            apps[6].instruction = "Build jump pathways using colored block sequences.";
+                            
+                            apps[7].url = "https://swedenlistening.netlify.app/";
+                            apps[7].instruction = "Identify jump timing audio beats to clear hurdles.";
+                            
+                            return apps;
+                        })(),
+                        homeworkPrompt: "Create a list of 5 obstacles for a physical obstacle course you could set up in your yard or living room (e.g., jumping over pillows, crawling under tables). Have fun testing it!",
+                        transcript: `Obby Blueprint: Safe Platform Design\n\nWhen building an Obby, ensure checkpoints are spaced fairly! \n\nIf jumps are too long, players will get frustrated. Add variety by including disappearing blocks, turning gears, and thin balance beams. Make sure to color-code neon pink blocks as 'danger blocks' that players must jump over!`,
+                        speakingExpressions: [
+                            "Touch the checkpoint flag!",
+                            "Jump over the neon pink lava!",
+                            "This balance beam is very thin!",
+                            "Double jump to reach the next block.",
+                            "We made it to level ten!",
+                            "Good luck on the final jump!"
+                        ]
+                    },
+                    { 
+                        id: 3, 
+                        title: "Animal Crossing: Cozy Island Planner", 
+                        duration: "6:40",
+                        youtubeId: "3zTR4ayDG38",
+                        thumbnail: "https://img.youtube.com/vi/3zTR4ayDG38/hqdefault.jpg",
+                        description: "Arrange flowers, design custom floor pathways, and create a cozy relaxation park on your tropical island paradise.",
+                        apps: (() => {
+                            const apps = generateApps(7);
+                            apps[0].url = "https://sweden2-1.netlify.app/";
+                            apps[0].instruction = "Design clean paths to route visitors through the park.";
+                            
+                            apps[1].url = "https://wordcatcher.netlify.app/";
+                            apps[1].instruction = "Catch the floating falling leaves to earn flower seeds!";
+                            
+                            apps[2].url = "https://sweden2-2.netlify.app/";
+                            apps[2].instruction = "Sequence the gardening process from seeds to fully grown roses.";
+                            
+                            apps[3].url = "https://swedenmemory.netlify.app/";
+                            apps[3].instruction = "Match island villagers to their favorite outdoor hobbies.";
+                            
+                            apps[4].url = "https://sweden-quiz.puter.site/";
+                            apps[4].instruction = "Pick cozy path patterns and place them in the correct map grid.";
+                            
+                            apps[5].url = "https://sweden2-3.netlify.app/";
+                            apps[5].instruction = "Organize fruit trees by category (peaches, apples, pears).";
+                            
+                            apps[6].url = "https://common-verbs.netlify.app/";
+                            apps[6].instruction = "Balloon Pop Game: Pop floating reward balloons with slingshots!";
+                            
+                            return apps;
+                        })(),
+                        homeworkPrompt: "Draw your dream garden room! Include elements like a hammock, exotic flowering plants, cozy carpets, and cute pets. List the color palette you used!",
+                        transcript: `Island Planning: Cozy Space Setup\n\nTo make an island beautiful, place fences next to flowers to prevent running players from trampling them. \n\nCombine yellow and red roses to breed beautiful orange roses! Arrange tree orchards with a space of two tiles between each trunk so fruit has room to drop easily on the ground.`,
+                        speakingExpressions: [
+                            "Plant some red rose seeds.",
+                            "Catch the rare butterfly with the net!",
+                            "Check the mailbox for player letters.",
+                            "Can I borrow your iron watering can?",
+                            "Help me decorate the campsite!",
+                            "The island looks so cozy!"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Render the Units, incorporating the responsive 4-story miniature grid
+        const renderCurriculum = () => {
+            const container = document.getElementById('units-container');
+            let html = '';
+
+            curriculumData.forEach((unit, uIndex) => {
+                html += `
+                <div class="bg-arcade-panel border-4 border-[#1A0B2E] rounded-3xl overflow-hidden shadow-xl transition-all duration-300 hover:border-arcade-accentPink/80">
+                    <!-- Unit Banner Header (Big chunky kid-friendly button) -->
+                    <button class="w-full px-6 py-6 flex items-center justify-between bg-gradient-to-r from-arcade-panel to-indigo-950 text-left focus:outline-none" onclick="toggleUnit(${uIndex})">
+                        <div class="flex items-center gap-4">
+                            <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-arcade-accentYellow flex items-center justify-center border-b-4 border-amber-600">
+                                <span class="text-arcade-bg font-display font-black text-2xl">${unit.id}</span>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-display font-black text-white tracking-wide hover:text-arcade-accentYellow transition">${unit.title}</h3>
+                                <p class="text-slate-200 text-sm font-bold mt-1">${unit.description}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-arcade-accentPink text-white font-black px-3.5 py-1.5 rounded-full border-2 border-arcade-accentPink">Games Available</span>
+                            <svg id="icon-unit-${uIndex}" class="w-6 h-6 text-white transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </button>
+
+                    <!-- Unit Content -->
+                    <div id="content-unit-${uIndex}" class="unit-content bg-[#150727]">
+                        <div class="p-6 border-t-4 border-[#1A0B2E]">
+                            <!-- Story Miniatures Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                `;
+
+                unit.stories.forEach((story, sIndex) => {
+                    const durationText = story.gameUrl ? "LIVE PLAY ⚡" : story.duration;
+                    html += `
+                                <!-- Story Card -->
+                                <div class="group bg-arcade-panel border-4 border-[#1A0B2E] rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:border-arcade-accentCyan hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] flex flex-col justify-between">
+                                    
+                                    <!-- Video Thumbnail & Play Overlay -->
+                                    <div class="relative aspect-video w-full overflow-hidden bg-black cursor-pointer" onclick="openLearningModal(${uIndex}, ${sIndex})">
+                                        <img src="${story.thumbnail}" alt="${story.title}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80';">
+                                        <!-- Duration Badge -->
+                                        <span class="absolute bottom-2 right-2 bg-arcade-accentPink text-xs font-black text-white px-2.5 py-1 rounded-full tracking-wide shadow-md">${durationText}</span>
+                                        <!-- Play Button Overlay -->
+                                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                                            <div class="w-14 h-14 rounded-full bg-arcade-coral text-white flex items-center justify-center transform scale-90 group-hover:scale-100 transition-all duration-300 shadow-lg border-b-4 border-amber-800">
+                                                <svg class="w-7 h-7 fill-current ml-1" viewBox="0 0 24 24">
+                                                    <path d="M8 5v14l11-7z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Content Meta -->
+                                    <div class="p-4 flex-grow flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-center gap-1.5 text-xs text-arcade-accentCyan font-black mb-1 uppercase tracking-wider">
+                                                <span>⭐ ${story.gameUrl ? 'Direct Game' : 'Game Guide'}</span>
+                                            </div>
+                                            <h4 class="font-black text-white text-lg mb-1.5 group-hover:text-arcade-accentYellow transition">${story.title}</h4>
+                                            <p class="text-xs text-slate-200 font-bold line-clamp-2 leading-relaxed mb-4">${story.description}</p>
+                                        </div>
+
+                                        <!-- Action footer inside card -->
+                                        <button onclick="openLearningModal(${uIndex}, ${sIndex})" class="w-full py-3 bg-arcade-accentPink hover:bg-rose-500 border-b-4 border-rose-800 text-white font-extrabold text-sm rounded-xl transition flex items-center justify-center gap-2">
+                                            <span>${story.gameUrl ? 'Play Game Live 🎮' : 'Enter Game Lab 🎮'}</span>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                    `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        };
+
+        const toggleTheme = () => {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateThemeIcons();
+        };
+
+        const updateThemeIcons = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const icons = document.querySelectorAll('.theme-toggle-icon');
+            icons.forEach(icon => {
+                if (isDark) {
+                    icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 110 8 4 4 0 010-8z"/></svg>`;
+                } else {
+                    icon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>`;
+                }
+            });
+        };
+
+        // Accordion Controls
+        window.toggleUnit = (index) => {
+            const content = document.getElementById(`content-unit-${index}`);
+            const icon = document.getElementById(`icon-unit-${index}`);
+            
+            content.classList.toggle('active');
+            
+            if (content.classList.contains('active')) {
+                icon.classList.add('rotate-180');
+            } else {
+                icon.classList.remove('rotate-180');
+            }
+        };
+
+        // Hover Tooltip Handlers
+        window.showTooltip = (event, instruction) => {
+            if (window.matchMedia("(pointer: coarse)").matches) return;
+
+            const tooltip = document.getElementById('app-tooltip');
+            const text = document.getElementById('tooltip-text');
+            text.textContent = instruction;
+            tooltip.classList.remove('hidden');
+            moveTooltip(event);
+        };
+
+        window.moveTooltip = (event) => {
+            const tooltip = document.getElementById('app-tooltip');
+            const tooltipWidth = tooltip.offsetWidth || 240;
+            const tooltipHeight = tooltip.offsetHeight || 90;
+
+            let left = event.clientX + 15;
+            let top = event.clientY + 15;
+
+            if (left + tooltipWidth > window.innerWidth) {
+                left = event.clientX - tooltipWidth - 15;
+            }
+            if (top + tooltipHeight > window.innerHeight) {
+                top = event.clientY - tooltipHeight - 15;
+            }
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+        };
+
+        window.hideTooltip = () => {
+            const tooltip = document.getElementById('app-tooltip');
+            tooltip.classList.add('hidden');
+        };
+
+        window.toggleTranscript = () => {
+            const transcriptWindow = document.getElementById('transcript-window');
+            const transcriptToggleText = document.getElementById('transcript-toggle-text');
+            const transcriptToggleIcon = document.getElementById('transcript-toggle-icon');
+
+            if (transcriptWindow.classList.contains('hidden')) {
+                transcriptWindow.classList.remove('hidden');
+                transcriptToggleText.textContent = "Hide Play Guide";
+                transcriptToggleIcon.textContent = "📖";
+            } else {
+                transcriptWindow.classList.add('hidden');
+                transcriptToggleText.textContent = "Read Play Guide & Tips";
+                transcriptToggleIcon.textContent = "📘";
+            }
+        };
+
+        window.toggleMobileMenu = () => {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('hamburger-icon');
+            const isOpen = !menu.classList.contains('hidden');
+
+            if (isOpen) {
+                menu.classList.add('hidden');
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>';
+            } else {
+                menu.classList.remove('hidden');
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>';
+            }
+        };
+
+        window.closeMobileMenu = () => {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('hamburger-icon');
+            menu.classList.add('hidden');
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>';
+        };
+
+        window.triggerMobileGame = () => {
+            closeMobileMenu();
+            openGamesModal();
+        };
+
+        window.triggerMobileHelp = () => {
+            closeMobileMenu();
+            openHelpModal();
+        };
+
+        // Immersive Video Player Modal Control
+        window.openLearningModal = (unitIndex, storyIndex) => {
+            activeUnitIndex = unitIndex;
+            activeStoryIndex = storyIndex;
+
+            const story = curriculumData[unitIndex].stories[storyIndex];
+            const modal = document.getElementById('learning-modal');
+            const iframe = document.getElementById('modal-iframe');
+            const title = document.getElementById('modal-story-title');
+            const desc = document.getElementById('modal-story-desc');
+            const appsContainer = document.getElementById('modal-apps-container');
+            const transcriptText = document.getElementById('transcript-text');
+
+            const transcriptWindow = document.getElementById('transcript-window');
+            const transcriptToggleText = document.getElementById('transcript-toggle-text');
+            const transcriptToggleIcon = document.getElementById('transcript-toggle-icon');
+            transcriptWindow.classList.add('hidden');
+            transcriptToggleText.textContent = "Read Play Guide & Tips";
+            transcriptToggleIcon.textContent = "📘";
+
+            // If the element has a direct game URL instead of a YouTube video, load it straight up!
+            if (story.gameUrl) {
+                iframe.src = story.gameUrl;
+            } else {
+                iframe.src = `https://www.youtube.com/embed/${story.youtubeId}?autoplay=0&rel=0`;
+            }
+
+            title.textContent = story.title;
+            desc.textContent = story.description;
+            transcriptText.textContent = story.transcript || "Guide under construction by the Arcade Tech Team!";
+
+            let appsHtml = '';
+            story.apps.forEach((app, idx) => {
+                const safeInstruction = app.instruction.replace(/'/g, "\\'");
+                const appUrl = app.url || '';
+                appsHtml += `
+                <button onclick="launchApp('${app.title}', '${appUrl}')" 
+                        onmouseenter="showTooltip(event, '${safeInstruction}')"
+                        onmousemove="moveTooltip(event)"
+                        onmouseleave="hideTooltip()"
+                        class="w-full flex items-center justify-between p-3.5 border-2 border-arcade-accentCyan/20 rounded-2xl bg-[#150727]/80 hover:bg-arcade-accentCyan/15 hover:border-arcade-accentCyan transition duration-150 text-left">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <span class="text-2xl flex-shrink-0">⚡</span>
+                        <div class="overflow-hidden">
+                            <span class="font-extrabold text-white text-base leading-tight block truncate">${app.title}</span>
+                            <span class="text-xs text-arcade-accentCyan font-bold mt-1 leading-snug line-clamp-2 hidden [@media(pointer:coarse)]:block pr-2">${app.instruction}</span>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-arcade-accentCyan flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                `;
+            });
+            appsContainer.innerHTML = appsHtml;
+
+            history.pushState({ modalOpen: true }, '');
+
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        };
+
+        window.closeLearningModal = (fromPopState = false) => {
+            const modal = document.getElementById('learning-modal');
+            if (modal.classList.contains('hidden')) return;
+
+            const iframe = document.getElementById('modal-iframe');
+            iframe.src = '';
+            
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            hideTooltip();
+
+            if (!fromPopState) {
+                history.back();
+            }
+        };
+
+        window.addEventListener('popstate', (event) => {
+            closeLearningModal(true);
+        });
+
+        // Homework Panel Controls
+        window.openHomeworkPanel = () => {
+            const story = curriculumData[activeUnitIndex].stories[activeStoryIndex];
+            document.getElementById('homework-prompt-text').textContent = story.homeworkPrompt || "Design a new custom skin for your player hero!";
+            document.getElementById('homework-modal').classList.remove('hidden');
+        };
+
+        window.closeHomeworkPanel = () => {
+            document.getElementById('homework-modal').classList.add('hidden');
+        };
+
+        // Voice Speaking Comms Panel Setup
+        window.openSpeakingPanel = () => {
+            const story = curriculumData[activeUnitIndex].stories[activeStoryIndex];
+            const expressions = story.speakingExpressions || [
+                "Friendly greetings to all players!",
+                "Great match, thanks for playing!",
+                "Could I have assistance at sector B?",
+                "Watch out for the upcoming map obstacle!",
+                "Friendly gaming is safe and fun!"
+            ];
+
+            const listContainer = document.getElementById('speaking-expressions-list');
+            listContainer.innerHTML = expressions.map((expr, idx) => `
+                <li class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-xl bg-arcade-accentCyan/10 border-2 border-arcade-accentCyan/40 flex items-center justify-center text-sm text-arcade-accentCyan font-black flex-shrink-0">${idx + 1}</span> 
+                    <span class="font-extrabold text-base">${expr}</span>
+                </li>
+            `).join('');
+
+            document.getElementById('speaking-modal').classList.remove('hidden');
+        };
+
+        window.closeSpeakingPanel = () => {
+            document.getElementById('speaking-modal').classList.add('hidden');
+        };
+
+        // Parent and Help Hubs Setup
+        window.openHelpModal = () => {
+            const listContainer = document.getElementById('help-list-container');
+            listContainer.innerHTML = helpAppsData.map(app => `
+                <button onclick="launchHelpAppById(${app.id})" class="group flex items-center justify-between p-4 border-2 border-[#1A0B2E] hover:border-arcade-accentCyan bg-[#150727] rounded-2xl transition duration-150 text-left">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${app.emoji || '✨'}</span>
+                        <span class="font-black text-white group-hover:text-arcade-accentCyan transition">${app.title}</span>
+                    </div>
+                    <svg class="w-5 h-5 text-arcade-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            `).join('');
+
+            document.getElementById('help-modal').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        };
+
+        window.closeHelpModal = () => {
+            document.getElementById('help-modal').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        };
+
+        window.launchHelpAppById = (id) => {
+            closeHelpModal();
+            const app = helpAppsData.find(a => a.id === id);
+            if (app) {
+                if (app.url) {
+                    launchApp(app.title, app.url);
+                } else {
+                    alertExercise(app.title);
+                }
+            }
+        };
+
+        // Retro Game Room launcher
+        window.openGamesModal = () => {
+            const listContainer = document.getElementById('games-list-container');
+            listContainer.innerHTML = gamesData.map(game => `
+                <button onclick="launchGame('${game.title}', '${game.url}')" class="group flex items-center justify-between p-4 border-2 border-[#1A0B2E] hover:border-arcade-coral bg-[#150727] rounded-2xl transition duration-150 text-left">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${game.emoji || '🎮'}</span>
+                        <span class="font-black text-white group-hover:text-arcade-coral transition">${game.title}</span>
+                    </div>
+                    <svg class="w-5 h-5 text-arcade-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            `).join('');
+
+            document.getElementById('games-modal').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        };
+
+        window.closeGamesModal = () => {
+            document.getElementById('games-modal').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        };
+
+        window.launchGame = (gameName, url) => {
+            closeGamesModal();
+            launchApp(gameName, url);
+        };
+
+        window.launchSpeakingApp = () => {
+            closeSpeakingPanel();
+            
+            // Map specific gaming voice practice apps safely based on Unit/Story selection
+            if (activeUnitIndex === 0) {
+                if (activeStoryIndex === 0) {
+                    launchApp("Ocean Battle Multiplayer Comms", "https://speaking1.netlify.app/");
+                } else if (activeStoryIndex === 1) {
+                    launchApp("Pacman Escape Voice Coordinates", "https://speaking-2.netlify.app/");
+                } else if (activeStoryIndex === 2) {
+                    launchApp("Space Defense Tactics Studio", "https://speaking3.netlify.app/");              
+                } else if (activeStoryIndex === 3) {
+                    launchApp("Speedrunner Action Callouts", "https://speaking4.netlify.app/");
+                } else {
+                    alertExercise("Speaking Game Callouts Hub");
+                }
+            } else if (activeUnitIndex === 1) {
+                if (activeStoryIndex === 0) {
+                    launchApp("Minecraft Constructor Voice Teamup", "https://speaking-2-1.netlify.app/");
+                } else if (activeStoryIndex === 1) {
+                    launchApp("Obby Script Voice Lab", "https://speaking6.puter.site/"); 
+                } else if (activeStoryIndex === 2) {
+                    launchApp("Cozy Island Sharing Lobby", "https://memory-game-mood-linkingwords.netlify.app/");
+                } else {
+                    alertExercise("Speaking Game Callouts Hub");
+                }
+            } else {
+                alertExercise("Speaking Game Callouts Hub");
+            }
+        };
+
+        // Safe visual launching animation
+        window.launchApp = (appName, url) => {
+            alertExercise(appName);
+            if (url) {
+                setTimeout(() => {
+                    window.open(url, '_blank');
+                }, 1000);
+            }
+        };
+
+        // Custom Kid-Friendly Playful Notification Toast
+        window.alertExercise = (appName) => {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-6 md:right-6 z-[100] w-[90vw] md:w-auto bg-arcade-panel border-4 border-arcade-accentYellow p-4 rounded-2xl shadow-2xl flex items-center gap-3 max-w-sm animate-bounce';
+            notification.innerHTML = `
+                <div class="text-3xl">🚀</div>
+                <div>
+                    <h5 class="font-black text-white text-base">Loading Game Zone</h5>
+                    <p class="text-xs text-arcade-accentYellow font-bold">Unlocking ${appName}...</p>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2500);
+        };
+
+        // Run UI Initializers
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCurriculum();
+            updateThemeIcons();
+
+            // Sound design integration
+            document.addEventListener('click', (e) => {
+                const isInteractive = e.target.closest('button, a, [onclick], .cursor-pointer');
+                if (isInteractive) {
+                    playClickSound();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
