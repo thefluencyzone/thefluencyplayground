@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
@@ -219,8 +219,9 @@
             <!-- Left Side: Interactive Frame & Workspace Sections -->
             <div class="w-full md:w-3/5 bg-[#150727] flex flex-col justify-between overflow-y-visible md:overflow-y-auto flex-shrink-0 md:flex-shrink border-b-4 md:border-b-0 md:border-r-4 border-arcade-accentPink/30">
                 <div>
-                    <div class="relative pb-[56.25%] h-0">
+                    <div id="media-container" class="relative pb-[56.25%] h-0 bg-[#1A0B2E]">
                         <iframe id="modal-iframe" class="absolute top-0 left-0 w-full h-full bg-[#1A0B2E]" src="" title="Arcade game player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        <img id="modal-image" class="absolute top-0 left-0 w-full h-full object-cover hidden" src="" alt="Game preview image" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=80';">
                     </div>
                     <div class="p-6">
                         <h3 id="modal-story-title" class="text-3xl font-display font-black text-white mb-2">Game Title</h3>
@@ -238,30 +239,8 @@
                         </div>
 
                         <!-- Core Workspace Interactive Modules -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t-2 border-arcade-accentPink/20">
-                            <!-- Creative Blueprint Challenge Button -->
-                            <button onclick="openHomeworkPanel()" class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-purple-900 to-indigo-950 border-2 border-arcade-coral hover:scale-105 text-left rounded-2xl transition duration-200 group">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-3xl">🎨</span>
-                                    <div>
-                                        <h5 class="text-base font-black text-white group-hover:text-arcade-coral transition">Creative Blueprint</h5>
-                                        <p class="text-xs text-slate-400">Launch drawing quest</p>
-                                    </div>
-                                </div>
-                                <svg class="w-5 h-5 text-arcade-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-                            </button>
-
-                            <!-- Co-Op Team Comms Hub Button -->
-                            <button onclick="openSpeakingPanel()" class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-purple-900 to-indigo-950 border-2 border-arcade-accentCyan hover:scale-105 text-left rounded-2xl transition duration-200 group">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-3xl">🗣️</span>
-                                    <div>
-                                        <h5 class="text-base font-black text-white group-hover:text-arcade-accentCyan transition">Co-Op Team Speak</h5>
-                                        <p class="text-xs text-slate-400">Team callouts & etiquette</p>
-                                    </div>
-                                </div>
-                                <svg class="w-5 h-5 text-arcade-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-                            </button>
+                        <div id="workspace-buttons-container" class="pt-4 border-t-2 border-arcade-accentPink/20">
+                            <!-- Buttons injected dynamically depending on game -->
                         </div>
                     </div>
                 </div>
@@ -523,8 +502,9 @@
                         id: 1, 
                         title: "Fish Eat Fish: Ocean Arena Preview", 
                         duration: "LIVE",
-                        gameUrl: "https://poki.com/es/g/fish-eat-fish", 
-                        thumbnail: "<a href='https://postimg.cc/yJMTzQqx' target='_blank'><img src='https://i.postimg.cc/yJMTzQqx/fish-eat-fish.png' border='0' alt='fish-eat-fish'></a>",
+                        pokiUrl: "https://poki.com/es/g/fish-eat-fish",
+                        gameUrl: "https://i.postimg.cc/JnnYZvPN/fish-eat-fish.png", 
+                        thumbnail: "https://i.postimg.cc/JnnYZvPN/fish-eat-fish.png",
                         description: "Go deep beneath the sea in this live multiplayer ocean battle! Eat smaller fish, dodge giant sharks, and grow into the king of the reef.",
                         apps: (() => {
                             const apps = generateApps(9);
@@ -879,7 +859,7 @@
                                 <!-- Story Card -->
                                 <div class="group bg-arcade-panel border-4 border-[#1A0B2E] rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:border-arcade-accentCyan hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] flex flex-col justify-between">
                                     
-                                    <!-- Video Thumbnail & Play Overlay -->
+                                    <!-- Video/Image Thumbnail & Play Overlay -->
                                     <div class="relative aspect-video w-full overflow-hidden bg-black cursor-pointer" onclick="openLearningModal(${uIndex}, ${sIndex})">
                                         <img src="${story.thumbnail}" alt="${story.title}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80';">
                                         <!-- Duration Badge -->
@@ -1045,7 +1025,7 @@
             openHelpModal();
         };
 
-        // Immersive Video Player Modal Control
+        // Immersive Video Player / Image Modal Control
         window.openLearningModal = (unitIndex, storyIndex) => {
             activeUnitIndex = unitIndex;
             activeStoryIndex = storyIndex;
@@ -1053,6 +1033,7 @@
             const story = curriculumData[unitIndex].stories[storyIndex];
             const modal = document.getElementById('learning-modal');
             const iframe = document.getElementById('modal-iframe');
+            const modalImg = document.getElementById('modal-image');
             const title = document.getElementById('modal-story-title');
             const desc = document.getElementById('modal-story-desc');
             const appsContainer = document.getElementById('modal-apps-container');
@@ -1065,16 +1046,79 @@
             transcriptToggleText.textContent = "Read Play Guide & Tips";
             transcriptToggleIcon.textContent = "📘";
 
-            // If the element has a direct game URL instead of a YouTube video, load it straight up!
-            if (story.gameUrl) {
+            const isImageUrl = story.gameUrl && (
+                story.gameUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i) || 
+                story.gameUrl.includes('unsplash.com') ||
+                story.gameUrl.includes('postimg.cc') ||
+                story.gameUrl.includes('i.postimg.cc')
+            );
+
+            if (isImageUrl) {
+                iframe.classList.add('hidden');
+                iframe.src = '';
+                
+                let imgSrc = story.gameUrl;
+                if (imgSrc.includes('postimg.cc') && !imgSrc.includes('i.postimg.cc')) {
+                    imgSrc = story.thumbnail && !story.thumbnail.includes('postimg.cc') ? story.thumbnail : 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80';
+                }
+                
+                modalImg.src = imgSrc;
+                modalImg.classList.remove('hidden');
+            } else if (story.gameUrl) {
+                modalImg.classList.add('hidden');
+                iframe.classList.remove('hidden');
                 iframe.src = story.gameUrl;
             } else {
+                modalImg.classList.add('hidden');
+                iframe.classList.remove('hidden');
                 iframe.src = `https://www.youtube.com/embed/${story.youtubeId}?autoplay=0&rel=0`;
             }
 
             title.textContent = story.title;
             desc.textContent = story.description;
             transcriptText.textContent = story.transcript || "Guide under construction by the Arcade Tech Team!";
+
+            const workspaceContainer = document.getElementById('workspace-buttons-container');
+            if (story.pokiUrl) {
+                workspaceContainer.className = "pt-4 border-t-2 border-arcade-accentPink/20";
+                workspaceContainer.innerHTML = `
+                    <button onclick="window.open('${story.pokiUrl}', '_blank')" class="w-full flex items-center justify-between px-5 py-4 bg-gradient-to-r from-arcade-accentPink to-purple-900 border-2 border-arcade-accentYellow hover:scale-105 text-left rounded-2xl transition duration-200 group shadow-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🐟</span>
+                            <div>
+                                <h5 class="text-base font-black text-white group-hover:text-arcade-accentYellow transition">Play Fish Eat Fish on Poki</h5>
+                                <p class="text-xs text-slate-300">Click to launch the full game on Poki</p>
+                            </div>
+                        </div>
+                        <svg class="w-5 h-5 text-arcade-accentYellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </button>
+                `;
+            } else {
+                workspaceContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t-2 border-arcade-accentPink/20";
+                workspaceContainer.innerHTML = `
+                    <button onclick="openHomeworkPanel()" class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-purple-900 to-indigo-950 border-2 border-arcade-coral hover:scale-105 text-left rounded-2xl transition duration-200 group">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🎨</span>
+                            <div>
+                                <h5 class="text-base font-black text-white group-hover:text-arcade-coral transition">Creative Blueprint</h5>
+                                <p class="text-xs text-slate-400">Launch drawing quest</p>
+                            </div>
+                        </div>
+                        <svg class="w-5 h-5 text-arcade-coral" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+
+                    <button onclick="openSpeakingPanel()" class="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-purple-900 to-indigo-950 border-2 border-arcade-accentCyan hover:scale-105 text-left rounded-2xl transition duration-200 group">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🗣️</span>
+                            <div>
+                                <h5 class="text-base font-black text-white group-hover:text-arcade-accentCyan transition">Co-Op Team Speak</h5>
+                                <p class="text-xs text-slate-400">Team callouts & etiquette</p>
+                            </div>
+                        </div>
+                        <svg class="w-5 h-5 text-arcade-accentCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                `;
+            }
 
             let appsHtml = '';
             story.apps.forEach((app, idx) => {
@@ -1110,7 +1154,9 @@
             if (modal.classList.contains('hidden')) return;
 
             const iframe = document.getElementById('modal-iframe');
+            const modalImg = document.getElementById('modal-image');
             iframe.src = '';
+            modalImg.src = '';
             
             modal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
