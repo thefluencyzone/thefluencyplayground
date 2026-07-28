@@ -106,7 +106,6 @@
 </head>
 <body class="antialiased flex flex-col min-h-screen">
 
-    <!-- Navigation (Styled with rounded borders for kid-friendly toy aesthetics) -->
     <nav class="sticky top-0 z-50 bg-[#2D1254]/95 backdrop-blur-md border-b-4 border-arcade-accentPink/30 transition-colors">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
@@ -168,7 +167,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <header class="relative overflow-hidden py-16 sm:py-24">
         <!-- Playful bubbles in the background -->
         <div class="absolute top-10 left-10 w-20 h-20 bg-arcade-accentPink/10 rounded-full blur-xl pointer-events-none float-animation"></div>
@@ -198,7 +196,6 @@
         </div>
     </header>
 
-    <!-- Games Curriculum Section -->
     <main id="games-section" class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
         <div class="mb-12 border-b-4 border-arcade-panel/15 dark:border-arcade-panel/60 pb-6 flex items-center justify-between">
             <div>
@@ -213,7 +210,6 @@
         </div>
     </main>
 
-    <!-- Immersive Video Player & Exercise Workspace Modal -->
     <div id="learning-modal" class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-arcade-panel border-4 border-arcade-accentPink w-full max-w-5xl rounded-3xl overflow-y-auto md:overflow-hidden shadow-[0_0_40px_rgba(255,51,102,0.4)] flex flex-col md:flex-row max-h-[95dvh] md:max-h-[90vh]">
             <!-- Left Side: Interactive Frame & Workspace Sections -->
@@ -246,25 +242,27 @@
                 </div>
             </div>
             
-            <!-- Right Side: Mini-Games & Skills -->
-            <div class="w-full md:w-2/5 p-6 flex flex-col overflow-y-visible md:overflow-y-auto bg-arcade-panel">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h4 class="text-lg font-black uppercase tracking-wider text-arcade-accentYellow font-display">⚡ Play & Drill Challenges</h4>
-                    </div>
+            <div class="w-full md:w-2/5 p-4 sm:p-6 flex flex-col bg-arcade-panel min-h-[400px] md:min-h-0">
+                <div class="flex justify-between items-center mb-4">
+                    <a href="https://fishexpressions.netlify.app/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 cursor-pointer group hover:opacity-90 transition" title="Click to launch Fish Expressions in a new tab">
+                        <span class="text-2xl transition-transform group-hover:scale-110">🐟</span>
+                        <h4 class="text-lg font-black uppercase tracking-wider text-arcade-accentYellow font-display group-hover:text-arcade-accentCyan group-hover:underline flex items-center gap-1.5">
+                            <span>Fish Expressions</span>
+                            <svg class="w-4 h-4 text-arcade-accentCyan opacity-80 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </h4>
+                    </a>
                     <!-- Desktop-only Close Button -->
                     <button onclick="closeLearningModal()" class="hidden md:block text-white hover:bg-rose-500 bg-arcade-accentPink p-2 rounded-xl transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
-                <div id="modal-apps-container" class="space-y-3 flex-grow">
-                    <!-- Exercise buttons injected dynamically -->
+                <div class="w-full flex-grow relative rounded-2xl overflow-hidden border-2 border-arcade-accentCyan/40 bg-[#150727] min-h-[350px]">
+                    <iframe src="https://fishexpressions.netlify.app/" class="w-full h-full absolute inset-0 border-0" title="Fish Expressions Preview" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Supplementary Feature Modal: Creative Blueprint Quest -->
     <div id="homework-modal" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-arcade-panel border-4 border-arcade-coral w-full max-w-lg rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(255,112,67,0.3)] flex flex-col">
             <div class="p-6 border-b-2 border-slate-700 flex justify-between items-center bg-purple-950">
@@ -288,7 +286,6 @@
         </div>
     </div>
 
-    <!-- Supplementary Feature Modal: Speaking Section -->
     <div id="speaking-modal" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-arcade-panel border-4 border-arcade-accentCyan w-full max-w-xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,229,255,0.3)] flex flex-col">
             <div class="p-6 border-b-2 border-slate-700 flex justify-between items-center bg-purple-950">
@@ -320,7 +317,6 @@
         </div>
     </div>
 
-    <!-- Need Help? Supplementary Modal -->
     <div id="help-modal" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-arcade-panel border-4 border-arcade-accentCyan w-full max-w-xl rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,229,255,0.3)] flex flex-col">
             <!-- Header -->
@@ -373,7 +369,6 @@
         <p id="tooltip-text" class="text-xs text-white leading-relaxed font-bold">Instructions will render dynamically.</p>
     </div>
 
-    <!-- Footer -->
     <footer class="bg-arcade-panel border-t-8 border-arcade-accentPink/30 mt-20 py-12">
         <div class="max-w-6xl mx-auto px-4 text-center">
             <div class="flex justify-center mb-6 float-animation">
@@ -387,7 +382,6 @@
         </div>
     </footer>
 
-    <!-- Logic for generating Gaming Units, Play challenges, and Playable Modals -->
     <script>
         // Store current active indexes globally
         let activeUnitIndex = 0;
@@ -476,7 +470,6 @@
             "Answer trivia challenges about secret paths and unlock the level chest."
         ];
 
-        // Dynamic App generator mapped to individual game modules
         const generateApps = (fixedCount = null) => {
             const numApps = fixedCount !== null ? fixedCount : 8;
             const apps = [];
@@ -821,7 +814,6 @@
             }
         ];
 
-        // Render the Units, incorporating the responsive 4-story miniature grid
         const renderCurriculum = () => {
             const container = document.getElementById('units-container');
             let html = '';
@@ -1025,7 +1017,6 @@
             openHelpModal();
         };
 
-        // Immersive Video Player / Image Modal Control
         window.openLearningModal = (unitIndex, storyIndex) => {
             activeUnitIndex = unitIndex;
             activeStoryIndex = storyIndex;
@@ -1120,28 +1111,30 @@
                 `;
             }
 
-            let appsHtml = '';
-            story.apps.forEach((app, idx) => {
-                const safeInstruction = app.instruction.replace(/'/g, "\\'");
-                const appUrl = app.url || '';
-                appsHtml += `
-                <button onclick="launchApp('${app.title}', '${appUrl}')" 
-                        onmouseenter="showTooltip(event, '${safeInstruction}')"
-                        onmousemove="moveTooltip(event)"
-                        onmouseleave="hideTooltip()"
-                        class="w-full flex items-center justify-between p-3.5 border-2 border-arcade-accentCyan/20 rounded-2xl bg-[#150727]/80 hover:bg-arcade-accentCyan/15 hover:border-arcade-accentCyan transition duration-150 text-left">
-                    <div class="flex items-center gap-3 overflow-hidden">
-                        <span class="text-2xl flex-shrink-0">⚡</span>
-                        <div class="overflow-hidden">
-                            <span class="font-extrabold text-white text-base leading-tight block truncate">${app.title}</span>
-                            <span class="text-xs text-arcade-accentCyan font-bold mt-1 leading-snug line-clamp-2 hidden [@media(pointer:coarse)]:block pr-2">${app.instruction}</span>
+            if (appsContainer) {
+                let appsHtml = '';
+                story.apps.forEach((app, idx) => {
+                    const safeInstruction = app.instruction.replace(/'/g, "\\'");
+                    const appUrl = app.url || '';
+                    appsHtml += `
+                    <button onclick="launchApp('${app.title}', '${appUrl}')" 
+                            onmouseenter="showTooltip(event, '${safeInstruction}')"
+                            onmousemove="moveTooltip(event)"
+                            onmouseleave="hideTooltip()"
+                            class="w-full flex items-center justify-between p-3.5 border-2 border-arcade-accentCyan/20 rounded-2xl bg-[#150727]/80 hover:bg-arcade-accentCyan/15 hover:border-arcade-accentCyan transition duration-150 text-left">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <span class="text-2xl flex-shrink-0">⚡</span>
+                            <div class="overflow-hidden">
+                                <span class="font-extrabold text-white text-base leading-tight block truncate">${app.title}</span>
+                                <span class="text-xs text-arcade-accentCyan font-bold mt-1 leading-snug line-clamp-2 hidden [@media(pointer:coarse)]:block pr-2">${app.instruction}</span>
+                            </div>
                         </div>
-                    </div>
-                    <svg class="w-5 h-5 text-arcade-accentCyan flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
-                </button>
-                `;
-            });
-            appsContainer.innerHTML = appsHtml;
+                        <svg class="w-5 h-5 text-arcade-accentCyan flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                    `;
+                });
+                appsContainer.innerHTML = appsHtml;
+            }
 
             history.pushState({ modalOpen: true }, '');
 
@@ -1208,7 +1201,6 @@
             document.getElementById('speaking-modal').classList.add('hidden');
         };
 
-        // Parent and Help Hubs Setup
         window.openHelpModal = () => {
             const listContainer = document.getElementById('help-list-container');
             listContainer.innerHTML = helpAppsData.map(app => `
@@ -1325,7 +1317,6 @@
             setTimeout(() => notification.remove(), 2500);
         };
 
-        // Run UI Initializers
         document.addEventListener('DOMContentLoaded', () => {
             renderCurriculum();
             updateThemeIcons();
